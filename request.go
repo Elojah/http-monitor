@@ -23,4 +23,8 @@ type RequestMapper interface {
 
 // RequestSubset targets part of stored requests per date.
 type RequestSubset struct {
+	FromTS     time.Time
+	ToTS       time.Time
+	StatusCode *int
+	Section    *string
 }

@@ -20,6 +20,8 @@ func (a *App) Dial(c Config) error {
 }
 
 // NewApp returns a new app.
-func NewApp() *App {
-	return nil
+func NewApp(rm monitor.RequestMapper) *App {
+	return &App{
+		RequestMapper: rm,
+	}
 }
