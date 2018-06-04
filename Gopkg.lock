@@ -2,6 +2,19 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hpcloud/tail"
+  packages = [
+    ".",
+    "ratelimiter",
+    "util",
+    "watch",
+    "winfile"
+  ]
+  revision = "a1dbeea552b7c8df4b542c66073e393de198a800"
+  source = "https://github.com/hpcloud/tail.git"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
@@ -22,9 +35,21 @@
   ]
   revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
 
+[[projects]]
+  name = "gopkg.in/fsnotify/fsnotify.v1"
+  packages = ["."]
+  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
+  version = "v1.4.7"
+
+[[projects]]
+  branch = "v1"
+  name = "gopkg.in/tomb.v1"
+  packages = ["."]
+  revision = "dd632973f1e7218eb1089048e0798ec9ae7dceb8"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f0abeb920368b3b2e50d99f6e5705f0ad6ccd5f7e708f639b6c1fa0820364a22"
+  inputs-digest = "577a66e9bea9b7c4f60196f8bb98392d41a1a7259ddb7f01e55bfafdb448100d"
   solver-name = "gps-cdcl"
   solver-version = 1

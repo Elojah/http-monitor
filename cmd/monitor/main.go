@@ -8,12 +8,9 @@ import (
 	"github.com/elojah/http-monitor/storage/mem"
 )
 
-func main() {
-	log.SetFormatter(&log.JSONFormatter{})
+func run(filepath string) {
 
-	filepath := flag.String("c", "bin/config.json", "configuration file in JSON")
-
-	cfg, err := NewConfig(*filepath)
+	cfg, err := NewConfig(filepath)
 	if err != nil {
 		log.Error(err)
 		return
@@ -24,5 +21,16 @@ func main() {
 		log.Error(err)
 		return
 	}
-	_ = app
+	if err := app.Start(); err != nil {
+		log.Error(err)
+		return
+	}
+}
+
+func main() {
+	log.SetFormatter(&log.JSONFormatter{})
+
+	filepath := flag.String("c", "bin/config.json", "configuration file in JSON")
+
+	run(*filepath)
 }

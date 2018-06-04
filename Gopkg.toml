@@ -29,6 +29,11 @@
   name = "github.com/sirupsen/logrus"
   version = "1.0.5"
 
+[[constraint]]
+  name = "github.com/hpcloud/tail"
+  source = "https://github.com/hpcloud/tail.git"
+  branch = "master"
+
 [prune]
   go-tests = true
   unused-packages = true
