@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/elojah/http-monitor/storage/mem"
+	"github.com/elojah/http-monitor/storage/redis"
 )
 
 func run(filepath string) {
@@ -15,8 +15,13 @@ func run(filepath string) {
 		log.Error(err)
 		return
 	}
-	memx := mem.NewService()
-	app := NewApp(memx)
+	redisx := redis.NewService()
+	if err := redisx.Dial(cfg); err != nil {
+		log.Error(err)
+		return
+	}
+
+	app := NewApp(redisx)
 	if err := app.Dial(cfg); err != nil {
 		log.Error(err)
 		return

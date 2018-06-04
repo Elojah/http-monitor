@@ -8,5 +8,11 @@
 	// time to consider to trigger an alert in seconds.
 	"alert_trigger_time": 120,
 	// time to consider after an alert to report in seconds.
-	"alert_report_time": 120
+	"alert_report_time": 120,
+	// local redis informations
+	"redis": {
+		"addr": "127.0.0.1:9851",
+		"password": "secret",
+		"db": 0
+	}
 }

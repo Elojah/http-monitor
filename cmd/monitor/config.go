@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
+
+	"github.com/elojah/http-monitor/storage/redis"
 )
 
 const (
@@ -16,6 +19,7 @@ type Config struct {
 	AlertReqPerSec   uint
 	AlertTriggerTime uint
 	AlertReportTime  uint
+	redis.Config
 }
 
 // NewConfig creates a new config initialized from filepath in JSON format.
@@ -28,4 +32,23 @@ func NewConfig(filepath string) (Config, error) {
 	var c Config
 	err = json.Unmarshal(raw, &c)
 	return c, err
+}
+
+func (c Config) Check() error {
+	if c.LogFile == "" {
+		return errors.New("log filepath cannot be empty")
+	}
+	if c.StatsInterval == 0 {
+		return errors.New("interval between each stats display cannot be 0")
+	}
+	if c.AlertReqPerSec == 0 {
+		return errors.New("number of requests required to trigger an alert cannot be 0")
+	}
+	if c.AlertTriggerTime == 0 {
+		return errors.New("number of seconds required to trigger an alert cannot be 0")
+	}
+	if c.AlertReportTime == 0 {
+		return errors.New("number of seconds required to report an alert cannot be 0")
+	}
+	return nil
 }
