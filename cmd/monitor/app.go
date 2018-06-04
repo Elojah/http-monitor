@@ -1,7 +1,13 @@
 package main
 
+import (
+	"github.com/elojah/http-monitor"
+)
+
 // App is the main monitor app responsible fo reading logs and displaying stats.
 type App struct {
+	monitor.RequestMapper
+
 	logFile       string
 	statsInterval uint
 }
