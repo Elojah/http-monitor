@@ -21,11 +21,11 @@ all: monitor
 # Executables
 monitor:
 	$(info $(M) building executable monitor…) @ ## Build program binary
-	$Q cd cmd/$(CLIENT) &&  $(GO) build \
+	$Q cd cmd/$(MONITOR) &&  $(GO) build \
 		-tags release \
 		-ldflags '-X $(PACKAGE)/cmd.Version=$(VERSION) -X $(PACKAGE)/cmd.BuildDate=$(DATE)' \
-		-o ../../bin/$(PACKAGE)_$(CLIENT)_$(VERSION)
-	$Q cp bin/$(PACKAGE)_$(CLIENT)_$(VERSION) bin/$(PACKAGE)_$(CLIENT)
+		-o ../../bin/$(PACKAGE)_$(MONITOR)_$(VERSION)
+	$Q cp bin/$(PACKAGE)_$(MONITOR)_$(VERSION) bin/$(PACKAGE)_$(MONITOR)
 
 # Dependencies
 .PHONY: dep
