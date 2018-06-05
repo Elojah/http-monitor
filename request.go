@@ -1,12 +1,14 @@
 package monitor
 
 import (
+	"net"
 	"time"
 )
 
 // Request represents a read request.
 type Request struct {
-	IP         string
+	IP         *net.IPAddr
+	Identity   string
 	UserID     string
 	TS         time.Time
 	URL        string

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/elojah/http-monitor"
 	"github.com/elojah/http-monitor/dto"
 	"github.com/hpcloud/tail"
@@ -58,8 +60,24 @@ func (a *App) Start() error {
 				return err
 			}
 		case line := <-t.Lines:
-
-			_ = line
+			if line.Err != nil {
+				return err
+			}
+			clf, err := dto.NewCLF(line.Text)
+			if err != nil {
+				// Don't stop if a line has wrong format
+				log.Error(err)
+				continue
+			}
+			req, err := clf.NewRequest()
+			if err != nil {
+				// Don't stop if a line has wrong format
+				log.Error(err)
+				continue
+			}
+			if err := a.AddRequestHit(req); err != nil {
+				return err
+			}
 		}
 	}
 }

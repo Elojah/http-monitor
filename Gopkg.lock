@@ -30,6 +30,12 @@
   source = "https://github.com/hpcloud/tail.git"
 
 [[projects]]
+  name = "github.com/satyrius/gonx"
+  packages = ["."]
+  revision = "f1c51f19b2b87faac9db82567fa41165c31edc7d"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
@@ -65,6 +71,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ad0b010b6ec54872cfbec5ff213a8c96dad23bdc63dae33993cffd50bdadb9d1"
+  inputs-digest = "3eaab3099e44113f42cc3c347e254a72bd80ca87617fbbc5cc4d87d0f486aca3"
   solver-name = "gps-cdcl"
   solver-version = 1
