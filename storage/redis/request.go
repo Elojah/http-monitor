@@ -1,10 +1,14 @@
 package redis
 
-import monitor "github.com/elojah/http-monitor"
+import (
+	monitor "github.com/elojah/http-monitor"
+
+	"github.com/go-redis/redis"
+)
 
 // CreateRequest is the implementation of Request service by mem.
-func (s *Service) CreateRequest(monitor.Request) error {
-	return nil
+func (s *Service) CreateRequest(req monitor.Request) error {
+	return s.ZIncrXX(req.URL, redis.Z{Score: 1, Member: nil}).Err()
 }
 
 // ListRequest is the implementation of Request service by mem.

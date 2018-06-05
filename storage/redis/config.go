@@ -6,15 +6,13 @@ import "errors"
 type Config struct {
 	Addr     string
 	Password string
-	DB       string
+	DB       int
 }
 
+// Check check if config fields are valid.
 func (c Config) Check() error {
 	if c.Addr == "" {
 		return errors.New("redis address url cannot be empty")
-	}
-	if c.DB == "" {
-		return errors.New("redis DB cannot be empty")
 	}
 	return nil
 }

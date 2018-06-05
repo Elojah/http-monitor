@@ -19,7 +19,7 @@ type Config struct {
 	AlertReqPerSec   uint
 	AlertTriggerTime uint
 	AlertReportTime  uint
-	redis.Config
+	Redis            redis.Config
 }
 
 // NewConfig creates a new config initialized from filepath in JSON format.
@@ -34,6 +34,7 @@ func NewConfig(filepath string) (Config, error) {
 	return c, err
 }
 
+// Check check if config fields are valid.
 func (c Config) Check() error {
 	if c.LogFile == "" {
 		return errors.New("log filepath cannot be empty")

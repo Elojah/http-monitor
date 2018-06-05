@@ -3,9 +3,8 @@ package main
 import (
 	"time"
 
-	"github.com/hpcloud/tail"
-
 	"github.com/elojah/http-monitor"
+	"github.com/hpcloud/tail"
 )
 
 // App is the main monitor app responsible fo reading logs and displaying stats.
@@ -13,7 +12,6 @@ type App struct {
 	monitor.RequestMapper
 
 	ticker *time.Ticker
-	done   chan struct{}
 
 	logFile string
 }
@@ -28,13 +26,13 @@ func NewApp(rm monitor.RequestMapper) *App {
 // Dial configure app with right settings.
 func (a *App) Dial(c Config) error {
 	a.logFile = c.LogFile
-	a.ticker = time.NewTicker(time.Second * a.statsInterval)
+	a.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
 	return nil
 }
 
+// Close interrupts the ticker and log reading,
 func (a *App) Close() {
 	a.ticker.Stop()
-	done <- struct{}{}
 }
 
 // Start starts the reading log process + regular display of stats.
@@ -45,11 +43,13 @@ func (a *App) Start() error {
 	}
 	for {
 		select {
-		case <-done:
-			return
-		case t := <-a.ticker.C:
+		case t, ok := <-a.ticker.C:
+			if !ok {
+				return nil
+			}
 			a.LogStats(t)
-		case t.Lines:
+		case line := <-t.Lines:
+			_ = line
 		}
 	}
 }

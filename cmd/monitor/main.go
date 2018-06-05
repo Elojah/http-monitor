@@ -16,7 +16,7 @@ func run(filepath string) {
 		return
 	}
 	redisx := redis.NewService()
-	if err := redisx.Dial(cfg); err != nil {
+	if err := redisx.Dial(cfg.Redis); err != nil {
 		log.Error(err)
 		return
 	}
