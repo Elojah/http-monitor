@@ -6,17 +6,42 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// CreateRequest is the implementation of Request service by mem.
-func (s *Service) CreateRequest(req monitor.Request) error {
-	return s.ZIncrXX(req.URL, redis.Z{Score: 1, Member: nil}).Err()
+const (
+	requestHitKey = "request_hit:"
+)
+
+// AddRequestHit is the implementation of Request service by redis.
+func (s *Service) AddRequestHit(req monitor.Request) error {
+	return s.Client.ZIncr(requestHitKey, redis.Z{Score: 1, Member: req.URL}).Err()
 }
 
-// ListRequest is the implementation of Request service by mem.
-func (s *Service) ListRequest(monitor.RequestSubset) ([]monitor.Request, error) {
+// ListRequestHit is the implementation of Request service by redis.
+func (s *Service) ListRequestHit(subset monitor.RequestSubset) ([]monitor.RequestHit, error) {
+	if subset.TopHits != nil {
+		cmd := s.ZRevRangeByScoreWithScores(
+			requestHitKey,
+			redis.ZRangeBy{
+				Count: int64(*subset.TopHits),
+				Min:   "-inf",
+				Max:   "+inf",
+			})
+		vals, err := cmd.Result()
+		if err != nil {
+			return nil, err
+		}
+		reqs := make([]monitor.RequestHit, len(vals))
+		for i, val := range vals {
+			reqs[i] = monitor.RequestHit{
+				Request: monitor.Request{URL: val.Member.(string)},
+				Hit:     int(val.Score),
+			}
+		}
+		return reqs, nil
+	}
 	return nil, nil
 }
 
-// CountRequest is the implementation of Request service by mem.
-func (s *Service) CountRequest(monitor.RequestSubset) (int, error) {
-	return 0, nil
+// ResetRequestHit reset all registered request hits.
+func (s *Service) ResetRequestHit() error {
+	return s.Del(requestHitKey).Err()
 }

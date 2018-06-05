@@ -14,17 +14,20 @@ type Request struct {
 	SizeCode   int
 }
 
-// RequestMapper is a data interface for request object.
-type RequestMapper interface {
-	CreateRequest(Request) error
-	ListRequest(RequestSubset) ([]Request, error)
-	CountRequest(RequestSubset) (int, error)
+// RequestHit represents a request and its number of hits
+type RequestHit struct {
+	Request
+	Hit int
+}
+
+// RequestHitMapper is a data interface for request hit object.
+type RequestHitMapper interface {
+	AddRequestHit(Request) error
+	ListRequestHit(RequestSubset) ([]RequestHit, error)
+	ResetRequestHit() error
 }
 
 // RequestSubset targets part of stored requests per date.
 type RequestSubset struct {
-	FromTS     time.Time
-	ToTS       time.Time
-	StatusCode *int
-	Section    *string
+	TopHits *uint
 }

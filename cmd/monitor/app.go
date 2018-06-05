@@ -9,7 +9,7 @@ import (
 
 // App is the main monitor app responsible fo reading logs and displaying stats.
 type App struct {
-	monitor.RequestMapper
+	monitor.RequestHitMapper
 
 	ticker *time.Ticker
 
@@ -17,9 +17,9 @@ type App struct {
 }
 
 // NewApp returns a new app.
-func NewApp(rm monitor.RequestMapper) *App {
+func NewApp(rm monitor.RequestHitMapper) *App {
 	return &App{
-		RequestMapper: rm,
+		RequestHitMapper: rm,
 	}
 }
 
