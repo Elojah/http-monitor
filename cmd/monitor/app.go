@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/elojah/http-monitor"
+	"github.com/elojah/http-monitor/dto"
 	"github.com/hpcloud/tail"
 )
 
@@ -13,7 +15,8 @@ type App struct {
 
 	ticker *time.Ticker
 
-	logFile string
+	logFile    string
+	topDisplay uint
 }
 
 // NewApp returns a new app.
@@ -26,6 +29,7 @@ func NewApp(rm monitor.RequestHitMapper) *App {
 // Dial configure app with right settings.
 func (a *App) Dial(c Config) error {
 	a.logFile = c.LogFile
+	a.topDisplay = c.TopDisplay
 	a.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
 	return nil
 }
@@ -43,17 +47,29 @@ func (a *App) Start() error {
 	}
 	for {
 		select {
-		case t, ok := <-a.ticker.C:
+		case _, ok := <-a.ticker.C:
 			if !ok {
 				return nil
 			}
-			a.LogStats(t)
+			if err := a.LogStats(); err != nil {
+				return err
+			}
+			if err := a.ResetRequestHit(); err != nil {
+				return err
+			}
 		case line := <-t.Lines:
+
 			_ = line
 		}
 	}
 }
 
 // LogStats log stats at time t.
-func (a *App) LogStats(t time.Time) {
+func (a *App) LogStats() error {
+	reqs, err := a.ListRequestHit(monitor.RequestSubset{TopHits: &a.topDisplay})
+	if err != nil {
+		return err
+	}
+	fmt.Println(dto.NewStats(reqs))
+	return nil
 }

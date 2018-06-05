@@ -16,6 +16,7 @@ const (
 type Config struct {
 	LogFile          string
 	StatsInterval    uint
+	TopDisplay       uint
 	AlertReqPerSec   uint
 	AlertTriggerTime uint
 	AlertReportTime  uint
@@ -41,6 +42,9 @@ func (c Config) Check() error {
 	}
 	if c.StatsInterval == 0 {
 		return errors.New("interval between each stats display cannot be 0")
+	}
+	if c.TopDisplay == 0 {
+		return errors.New("number of top hits to display cannot be 0")
 	}
 	if c.AlertReqPerSec == 0 {
 		return errors.New("number of requests required to trigger an alert cannot be 0")
