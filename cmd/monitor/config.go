@@ -14,13 +14,13 @@ const (
 
 // Config is the configuration structure for monitor.
 type Config struct {
-	LogFile          string
-	StatsInterval    uint
-	TopDisplay       uint
-	AlertReqPerSec   uint
-	AlertTriggerTime uint
-	AlertReportTime  uint
-	Redis            redis.Config
+	LogFile          string       `json:"log_file"`
+	StatsInterval    uint         `json:"stats_interval"`
+	TopDisplay       uint         `json:"top_display"`
+	AlertReqPerSec   uint         `json:"alert_req_per_sec"`
+	AlertTriggerTime uint         `json:"alert_trigger_time"`
+	AlertReportTime  uint         `json:"alert_report_time"`
+	Redis            redis.Config `json:"redis"`
 }
 
 // NewConfig creates a new config initialized from filepath in JSON format.

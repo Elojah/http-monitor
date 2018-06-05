@@ -12,22 +12,26 @@ func run(filepath string) {
 
 	cfg, err := NewConfig(filepath)
 	if err != nil {
-		log.Error(err)
+		log.WithField("read", "config").Error(err)
+		return
+	}
+	if err := cfg.Check(); err != nil {
+		log.WithField("check", "config").Error(err)
 		return
 	}
 	redisx := redis.NewService()
 	if err := redisx.Dial(cfg.Redis); err != nil {
-		log.Error(err)
+		log.WithField("dial", "redis").Error(err)
 		return
 	}
 
 	app := NewApp(redisx)
 	if err := app.Dial(cfg); err != nil {
-		log.Error(err)
+		log.WithField("dial", "app").Error(err)
 		return
 	}
 	if err := app.Start(); err != nil {
-		log.Error(err)
+		log.WithField("routine", "app").Error(err)
 		return
 	}
 }
