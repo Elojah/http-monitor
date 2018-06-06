@@ -12,5 +12,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+    volumes:
+      - ./bin/access.log:/go/src/monitor/bin/access.log
     links:
       - "redis"
