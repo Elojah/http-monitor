@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	sectionRgx = regexp.MustCompile(`\/(.*?)(\/|s)`)
+	sectionRgx = regexp.MustCompile(`(/.*?)(?:/|\s)`)
 )
 
 // Request represents a read request.
@@ -23,5 +23,9 @@ type Request struct {
 
 // Section returns the URL section.
 func (r Request) Section() string {
-	return sectionRgx.FindString(r.URL)
+	matches := sectionRgx.FindStringSubmatch(r.URL)
+	if len(matches) < 2 {
+		return ""
+	}
+	return matches[1]
 }
