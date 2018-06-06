@@ -3,6 +3,8 @@ package main
 import (
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/elojah/http-monitor"
 )
 
@@ -52,5 +54,9 @@ func (a *Alerter) Start() error {
 
 // LogAlert log an alert of ticks at time ts.
 func (a *Alerter) LogAlert(ticks int64, ts time.Time) {
-
+	log.WithFields(log.Fields{
+		"type":  "alert",
+		"ticks": ticks,
+		"ts":    ts.Unix(),
+	}).Info("alert triggered")
 }
