@@ -7,6 +7,7 @@ import (
 )
 
 var _ monitor.SectionMapper = (*Service)(nil)
+var _ monitor.TickMapper = (*Service)(nil)
 
 // Service is a mem service to store data directly in memory.
 type Service struct {

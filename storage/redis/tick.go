@@ -15,11 +15,12 @@ func (s *Service) CreateTick(tick monitor.Tick) error {
 
 	key := tickKey + strconv.FormatInt(tick.TS.Unix(), 10)
 
-	// Create new tick.
+	// Create new tick
 	if err := s.Incr(key).Err(); err != nil {
 		return err
 	}
 
+	// Set expiration time
 	return s.Expire(key, tick.TTL).Err()
 }
 

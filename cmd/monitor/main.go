@@ -5,6 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	monitor "github.com/elojah/http-monitor"
 	"github.com/elojah/http-monitor/storage/redis"
 )
 
@@ -25,7 +26,10 @@ func run(filepath string) {
 		return
 	}
 
-	app := NewApp(redisx)
+	services := monitor.Services{}
+	services.SectionMapper = redisx
+	services.TickMapper = redisx
+	app := NewApp(services)
 	if err := app.Dial(cfg); err != nil {
 		log.WithField("dial", "app").Error(err)
 		return

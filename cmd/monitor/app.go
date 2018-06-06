@@ -13,6 +13,7 @@ import (
 // App is the main monitor app responsible fo reading logs and displaying stats.
 type App struct {
 	monitor.SectionMapper
+	monitor.TickMapper
 
 	ticker *time.Ticker
 
@@ -21,9 +22,10 @@ type App struct {
 }
 
 // NewApp returns a new app.
-func NewApp(sm monitor.SectionMapper) *App {
+func NewApp(services monitor.Services) *App {
 	return &App{
-		SectionMapper: sm,
+		SectionMapper: services,
+		TickMapper:    services,
 	}
 }
 

@@ -10,6 +10,6 @@ type Tick struct {
 
 // TickMapper is a data interface for Tick object.
 type TickMapper interface {
-	IncrTick(Tick) error
+	CreateTick(Tick) error
 	CountTick() (int64, error)
 }
