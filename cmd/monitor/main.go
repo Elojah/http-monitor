@@ -29,15 +29,32 @@ func run(filepath string) {
 	services := monitor.Services{}
 	services.SectionMapper = redisx
 	services.TickMapper = redisx
-	app := NewApp(services)
-	if err := app.Dial(cfg); err != nil {
-		log.WithField("dial", "app").Error(err)
+
+	logReader := NewLogReader(services)
+	alerter := NewAlerter(services)
+	if err := logReader.Dial(cfg); err != nil {
+		log.WithField("dial", "log_reader").Error(err)
 		return
 	}
-	if err := app.Start(); err != nil {
-		log.WithField("routine", "app").Error(err)
+	if err := alerter.Dial(cfg); err != nil {
+		log.WithField("dial", "alerter").Error(err)
 		return
 	}
+
+	go func() {
+		defer logReader.Close()
+		if err := logReader.Start(); err != nil {
+			log.WithField("routine", "log_reader").Error(err)
+			return
+		}
+	}()
+	go func() {
+		defer alerter.Close()
+		if err := alerter.Start(); err != nil {
+			log.WithField("routine", "log_reader").Error(err)
+			return
+		}
+	}()
 }
 
 func main() {

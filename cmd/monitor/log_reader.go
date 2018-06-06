@@ -10,8 +10,8 @@ import (
 	"github.com/hpcloud/tail"
 )
 
-// App is the main monitor app responsible fo reading logs and displaying stats.
-type App struct {
+// LogReader is the main monitor app responsible fo reading logs and displaying stats.
+type LogReader struct {
 	monitor.SectionMapper
 	monitor.TickMapper
 
@@ -19,45 +19,47 @@ type App struct {
 
 	logFile    string
 	topDisplay uint
+	tickTTL    time.Duration
 }
 
-// NewApp returns a new app.
-func NewApp(services monitor.Services) *App {
-	return &App{
+// NewLogReader returns a new log reader.
+func NewLogReader(services monitor.Services) *LogReader {
+	return &LogReader{
 		SectionMapper: services,
 		TickMapper:    services,
 	}
 }
 
 // Dial configure app with right settings.
-func (a *App) Dial(c Config) error {
-	a.logFile = c.LogFile
-	a.topDisplay = c.TopDisplay
-	a.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
+func (lr *LogReader) Dial(c Config) error {
+	lr.logFile = c.LogFile
+	lr.topDisplay = c.TopDisplay
+	lr.tickTTL = time.Duration(c.AlertTriggerTime) * time.Second
+	lr.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
 	return nil
 }
 
 // Close interrupts the ticker and log reading,
-func (a *App) Close() {
-	a.ticker.Stop()
+func (lr *LogReader) Close() {
+	lr.ticker.Stop()
 }
 
 // Start starts the reading log process + regular display of stats.
-func (a *App) Start() error {
-	t, err := tail.TailFile(a.logFile, tail.Config{Follow: true})
+func (lr *LogReader) Start() error {
+	t, err := tail.TailFile(lr.logFile, tail.Config{Follow: true})
 	if err != nil {
 		return err
 	}
 	for {
 		select {
-		case _, ok := <-a.ticker.C:
+		case _, ok := <-lr.ticker.C:
 			if !ok {
 				return nil
 			}
-			if err := a.LogStats(); err != nil {
+			if err := lr.LogStats(); err != nil {
 				return err
 			}
-			if err := a.ResetSection(); err != nil {
+			if err := lr.ResetSection(); err != nil {
 				return err
 			}
 		case line := <-t.Lines:
@@ -76,7 +78,13 @@ func (a *App) Start() error {
 				log.Error(err)
 				continue
 			}
-			if err := a.IncrSection(req.Section()); err != nil {
+			if err := lr.IncrSection(req.Section()); err != nil {
+				return err
+			}
+			if err := lr.CreateTick(monitor.Tick{
+				TS:  time.Now(),
+				TTL: lr.tickTTL,
+			}); err != nil {
 				return err
 			}
 		}
@@ -84,8 +92,8 @@ func (a *App) Start() error {
 }
 
 // LogStats log stats at time t.
-func (a *App) LogStats() error {
-	reqs, err := a.ListSection(monitor.SectionSubset{TopHits: &a.topDisplay})
+func (lr *LogReader) LogStats() error {
+	reqs, err := lr.ListSection(monitor.SectionSubset{TopHits: &lr.topDisplay})
 	if err != nil {
 		return err
 	}

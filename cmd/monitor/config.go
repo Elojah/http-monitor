@@ -19,7 +19,7 @@ type Config struct {
 	TopDisplay       uint         `json:"top_display"`
 	AlertReqPerSec   uint         `json:"alert_req_per_sec"`
 	AlertTriggerTime uint         `json:"alert_trigger_time"`
-	AlertReportTime  uint         `json:"alert_report_time"`
+	AlertReccurTime  uint         `json:"alert_reccur_time"`
 	Redis            redis.Config `json:"redis"`
 }
 
@@ -52,8 +52,8 @@ func (c Config) Check() error {
 	if c.AlertTriggerTime == 0 {
 		return errors.New("number of seconds required to trigger an alert cannot be 0")
 	}
-	if c.AlertReportTime == 0 {
-		return errors.New("number of seconds required to report an alert cannot be 0")
+	if c.AlertReccurTime == 0 {
+		return errors.New("number of seconds required between two alerts check cannot be 0")
 	}
 	return nil
 }
