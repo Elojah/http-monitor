@@ -16,7 +16,7 @@ type Alerter struct {
 	lastAlert time.Time
 
 	reqPerSec   uint
-	triggerTime uint
+	triggerTime time.Duration
 	reboundTime time.Duration
 }
 
@@ -30,7 +30,7 @@ func NewAlerter(services monitor.Services) *Alerter {
 // Dial configure app with right settings.
 func (a *Alerter) Dial(c Config) error {
 	a.reqPerSec = c.AlertReqPerSec
-	a.triggerTime = c.AlertTriggerTime
+	a.triggerTime = time.Duration(c.AlertTriggerTime) * time.Second
 	a.reboundTime = time.Duration(c.AlertReboundTime) * time.Second
 	a.ticker = time.NewTicker(time.Second * time.Duration(c.AlertReccurTime))
 	return nil
@@ -44,11 +44,13 @@ func (a *Alerter) Close() {
 // Start starts the alert service.
 func (a *Alerter) Start() error {
 	for ts := range a.ticker.C {
-		ticks, err := a.CountTick()
+		min := ts.Add(-a.triggerTime)
+		max := ts
+		ticks, err := a.CountTick(monitor.TickSubset{Min: &min, Max: &max})
 		if err != nil {
 			return err
 		}
-		if ticks > int64(a.reqPerSec) && ts.Sub(a.lastAlert) > a.reboundTime {
+		if ticks > int(a.reqPerSec) && ts.Sub(a.lastAlert) > a.reboundTime {
 			a.lastAlert = ts
 			a.LogAlert(ticks, ts)
 		}
@@ -57,7 +59,7 @@ func (a *Alerter) Start() error {
 }
 
 // LogAlert log an alert of ticks at time ts.
-func (a *Alerter) LogAlert(ticks int64, ts time.Time) {
+func (a *Alerter) LogAlert(ticks int, ts time.Time) {
 	log.WithFields(log.Fields{
 		"type":  "alert",
 		"ticks": ticks,

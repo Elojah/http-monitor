@@ -34,7 +34,6 @@ func NewLogReader(services monitor.Services) *LogReader {
 func (lr *LogReader) Dial(c Config) error {
 	lr.logFile = c.LogFile
 	lr.topDisplay = c.TopDisplay
-	lr.tickTTL = time.Duration(c.AlertTriggerTime) * time.Second
 	lr.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
 	return nil
 }
@@ -81,10 +80,7 @@ func (lr *LogReader) Start() error {
 			if err := lr.IncrSection(req.Section()); err != nil {
 				return err
 			}
-			if err := lr.CreateTick(monitor.Tick{
-				TS:  time.Now(),
-				TTL: lr.tickTTL,
-			}); err != nil {
+			if err := lr.CreateTick(monitor.Tick{TS: req.TS}); err != nil {
 				return err
 			}
 		}

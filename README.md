@@ -3,6 +3,9 @@ HTTP monitoring daemon
 
 ## How to start
 ```
+> make dep #install dependencies
+> make #compile monitor
+> ./bin/monitor -c bin/config.json
 ```
 
 ## Configuration

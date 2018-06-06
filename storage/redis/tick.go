@@ -3,6 +3,8 @@ package redis
 import (
 	"strconv"
 
+	"github.com/go-redis/redis"
+
 	monitor "github.com/elojah/http-monitor"
 )
 
@@ -12,35 +14,26 @@ const (
 
 // CreateTick is the implementation of Tick service by redis.
 func (s *Service) CreateTick(tick monitor.Tick) error {
-
-	key := tickKey + strconv.FormatInt(tick.TS.Unix(), 10)
-
-	// Create new tick
-	if err := s.Incr(key).Err(); err != nil {
-		return err
-	}
-
-	// Set expiration time
-	return s.Expire(key, tick.TTL).Err()
+	return s.ZAdd(tickKey, redis.Z{Score: float64(tick.TS.Unix()), Member: nil}).Err()
 }
 
 // CountTick is the implementation of Tick service by redis.
-func (s *Service) CountTick() (int64, error) {
-	keys, err := s.Keys(tickKey + "*").Result()
+func (s *Service) CountTick(subset monitor.TickSubset) (int, error) {
+	min := "-inf"
+	max := "+inf"
+	if subset.Min != nil {
+		min = strconv.FormatInt(subset.Min.Unix(), 10)
+	}
+	if subset.Max != nil {
+		max = strconv.FormatInt(subset.Max.Unix(), 10)
+	}
+	cmd := s.ZRangeByScore(tickKey, redis.ZRangeBy{
+		Min: min,
+		Max: max,
+	})
+	vals, err := cmd.Result()
 	if err != nil {
 		return 0, err
 	}
-	var count int64
-	for _, key := range keys {
-		val, err := s.Get(key).Result()
-		if err != nil {
-			return 0, err
-		}
-		n, err := strconv.ParseInt(val, 10, 64)
-		if err != nil {
-			return 0, err
-		}
-		count += n
-	}
-	return count, nil
+	return len(vals), nil
 }
