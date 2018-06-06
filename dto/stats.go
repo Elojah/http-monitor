@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"fmt"
+
 	monitor "github.com/elojah/http-monitor"
 )
 
@@ -18,4 +20,13 @@ func NewStats(reqs []monitor.RequestHit) Stats {
 		stats.TopHits[req.URL] = req.Hit
 	}
 	return stats
+}
+
+// String returns the string representation sent for logs.
+func (s Stats) String() string {
+	var str string
+	for key, value := range s.TopHits {
+		str += fmt.Sprintf("%s: %d\n", key, value)
+	}
+	return str
 }

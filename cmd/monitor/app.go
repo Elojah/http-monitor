@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -88,6 +87,6 @@ func (a *App) LogStats() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(dto.NewStats(reqs))
+	log.Info(dto.NewStats(reqs).String())
 	return nil
 }
