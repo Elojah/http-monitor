@@ -6,14 +6,14 @@ type Section struct {
 	Hit  int
 }
 
-// SectionMapper is a data interface for request hit object.
+// SectionMapper is a data interface for Section object.
 type SectionMapper interface {
 	IncrSection(string) error
 	ListSection(SectionSubset) ([]Section, error)
 	ResetSection() error
 }
 
-// SectionSubset targets part of stored requests per date.
+// SectionSubset targets part of stored sections per hits.
 type SectionSubset struct {
 	TopHits *uint
 }
