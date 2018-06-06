@@ -31,7 +31,10 @@
 
 [[constraint]]
   name = "github.com/hpcloud/tail"
-  source = "https://github.com/hpcloud/tail.git"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
   branch = "master"
 
 [prune]

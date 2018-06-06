@@ -50,6 +50,7 @@ func NewCLF(s string) (CLF, error) {
 func (clf CLF) NewRequest() (monitor.Request, error) {
 	var req monitor.Request
 	var err error
+	req.ID = monitor.NewID()
 	req.IP, err = net.ResolveIPAddr("ip", clf.ip)
 	if err != nil {
 		return req, err

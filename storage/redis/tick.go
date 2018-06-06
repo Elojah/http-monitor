@@ -14,7 +14,7 @@ const (
 
 // CreateTick is the implementation of Tick service by redis.
 func (s *Service) CreateTick(tick monitor.Tick) error {
-	return s.ZAdd(tickKey, redis.Z{Score: float64(tick.TS.Unix()), Member: nil}).Err()
+	return s.ZAdd(tickKey, redis.Z{Score: float64(tick.TS.Unix()), Member: tick.RequestID.String()}).Err()
 }
 
 // CountTick is the implementation of Tick service by redis.

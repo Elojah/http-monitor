@@ -60,9 +60,5 @@ func (a *Alerter) Start() error {
 
 // LogAlert log an alert of ticks at time ts.
 func (a *Alerter) LogAlert(ticks int, ts time.Time) {
-	log.WithFields(log.Fields{
-		"type":  "alert",
-		"ticks": ticks,
-		"ts":    ts.Unix(),
-	}).Info("alert triggered")
+	log.Infof("High traffic generated an alert - hits = %d, triggered at %s", ticks, ts.String())
 }

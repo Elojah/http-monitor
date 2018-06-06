@@ -80,7 +80,7 @@ func (lr *LogReader) Start() error {
 			if err := lr.IncrSection(req.Section()); err != nil {
 				return err
 			}
-			if err := lr.CreateTick(monitor.Tick{TS: req.TS}); err != nil {
+			if err := lr.CreateTick(monitor.Tick{RequestID: req.ID, TS: time.Now()}); err != nil {
 				return err
 			}
 		}

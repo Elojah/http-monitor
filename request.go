@@ -12,6 +12,7 @@ var (
 
 // Request represents a read request.
 type Request struct {
+	ID         ID
 	IP         *net.IPAddr
 	Identity   string
 	UserID     string
