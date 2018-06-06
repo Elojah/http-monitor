@@ -19,6 +19,7 @@ type Config struct {
 	TopDisplay       uint         `json:"top_display"`
 	AlertReqPerSec   uint         `json:"alert_req_per_sec"`
 	AlertTriggerTime uint         `json:"alert_trigger_time"`
+	AlertReboundTime uint         `json:"alert_rebound_time"`
 	AlertReccurTime  uint         `json:"alert_reccur_time"`
 	Redis            redis.Config `json:"redis"`
 }

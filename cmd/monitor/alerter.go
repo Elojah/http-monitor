@@ -12,10 +12,12 @@ import (
 type Alerter struct {
 	monitor.TickMapper
 
-	ticker *time.Ticker
+	ticker    *time.Ticker
+	lastAlert time.Time
 
 	reqPerSec   uint
 	triggerTime uint
+	reboundTime time.Duration
 }
 
 // NewAlerter returns a new alerter.
@@ -29,6 +31,7 @@ func NewAlerter(services monitor.Services) *Alerter {
 func (a *Alerter) Dial(c Config) error {
 	a.reqPerSec = c.AlertReqPerSec
 	a.triggerTime = c.AlertTriggerTime
+	a.reboundTime = time.Duration(c.AlertReboundTime) * time.Second
 	a.ticker = time.NewTicker(time.Second * time.Duration(c.AlertReccurTime))
 	return nil
 }
@@ -45,7 +48,8 @@ func (a *Alerter) Start() error {
 		if err != nil {
 			return err
 		}
-		if ticks > int64(a.reqPerSec) {
+		if ticks > int64(a.reqPerSec) && ts.Sub(a.lastAlert) > a.reboundTime {
+			a.lastAlert = ts
 			a.LogAlert(ticks, ts)
 		}
 	}
