@@ -55,6 +55,7 @@ func run(filepath string) {
 			return
 		}
 	}()
+	select {}
 }
 
 func main() {
