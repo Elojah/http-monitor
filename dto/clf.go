@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	timeFormat = "2006/Jan/02:15:04:05 -0700"
+	timeFormat = "[02/Jan/2006:15:04:05 -0700]"
 )
 
 // CLF represents a common log format line.
@@ -28,18 +28,18 @@ type CLF struct {
 // NewCLF returns a new CLF from s. Returns an error if the string format is not clf.
 func NewCLF(s string) (CLF, error) {
 	re := regexp.MustCompile(`(\S+)\s+(\S+)\s+(\S+)\s+(\[.*?\])\s+(".*?")\s+(\S+)\s+(\S+)`)
-	parts := re.SubexpNames()
-	if len(parts) != 7 {
+	parts := re.FindStringSubmatch(s)
+	if len(parts) != 8 {
 		return CLF{}, errors.New("invalid common log format")
 	}
 	return CLF{
-		ip:         parts[0],
-		identity:   parts[1],
-		userID:     parts[2],
-		ts:         parts[3],
-		url:        parts[4],
-		statusCode: parts[5],
-		sizeCode:   parts[6],
+		ip:         parts[1],
+		identity:   parts[2],
+		userID:     parts[3],
+		ts:         parts[4],
+		url:        parts[5],
+		statusCode: parts[6],
+		sizeCode:   parts[7],
 	}, nil
 }
 
@@ -47,11 +47,10 @@ func NewCLF(s string) (CLF, error) {
 func (clf CLF) NewRequest() (monitor.Request, error) {
 	var req monitor.Request
 	var err error
-	req.IP, err = net.ResolveIPAddr("tcp", clf.ip)
+	req.IP, err = net.ResolveIPAddr("ip", clf.ip)
 	if err != nil {
 		return req, err
 	}
-	req.Identity = clf.identity
 	req.UserID = clf.userID
 	if req.TS, err = time.Parse(timeFormat, clf.ts); err != nil {
 		return req, err

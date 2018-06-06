@@ -1,5 +1,5 @@
 {
-	"log_file": "/var/log/access.log",
+	"log_file": "bin/access.log",
 	"stats_interval": 10,
 	"top_display": 10,
 	"alert_req_per_sec":10,
