@@ -5,10 +5,12 @@ services:
   redis:
     build: docker/redis
     ports:
-      - 6379:6379
+      - "6379:6379"
 
-  # Golang
-  golang:
-    build: docker/golang
-    ports:
-      - 5000:5000
+  # App
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    links:
+      - "redis"
