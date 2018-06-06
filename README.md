@@ -2,11 +2,16 @@
 HTTP monitoring daemon
 
 ## How to start
+#### local
 ```
 > make dep #install dependencies
 > make #compile monitor
-> docker-compose -d #start redis
+> docker-compose -d redis #start redis
 > ./bin/monitor -c bin/config.json
+```
+#### container
+```
+> docker-compose -d #start redis
 ```
 
 ## Configuration
