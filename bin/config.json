@@ -3,7 +3,8 @@
 	"alerter":{
 		"treshold":120,
 		"trigger_range": "10s",
-		"rebound_gap": "2s",
+		"trigger_recover": "10s",
+		"rebound_gap": "5s",
 		"reccur_gap": "1s"
 	},
 	"log_reader": {

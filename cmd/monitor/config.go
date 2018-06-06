@@ -14,10 +14,11 @@ const (
 
 // AlerterConfig is the configuration object for alerter.
 type AlerterConfig struct {
-	Treshold     uint   `json:"treshold"`
-	TriggerRange string `json:"trigger_range"`
-	ReboundGap   string `json:"rebound_gap"`
-	ReccurGap    string `json:"reccur_gap"`
+	Treshold       uint   `json:"treshold"`
+	TriggerRange   string `json:"trigger_range"`
+	TriggerRecover string `json:"trigger_recover"`
+	ReboundGap     string `json:"rebound_gap"`
+	ReccurGap      string `json:"reccur_gap"`
 }
 
 // Check check if config fields are valid.
@@ -27,6 +28,9 @@ func (c AlerterConfig) Check() error {
 	}
 	if c.TriggerRange == "" {
 		return errors.New("missing trigger_range field")
+	}
+	if c.TriggerRecover == "" {
+		return errors.New("missing trigger_recover field")
 	}
 	if c.ReccurGap == "" {
 		return errors.New("missing reccur_gap field")
