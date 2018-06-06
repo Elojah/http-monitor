@@ -6,7 +6,7 @@ import (
 	monitor "github.com/elojah/http-monitor"
 )
 
-var _ monitor.RequestHitMapper = (*Service)(nil)
+var _ monitor.SectionHitMapper = (*Service)(nil)
 
 // Service is a mem service to store data directly in memory.
 type Service struct {

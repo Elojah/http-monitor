@@ -11,13 +11,13 @@ type Stats struct {
 	TopHits map[string]int
 }
 
-// NewStats create a new display stats object from request hits.
-func NewStats(reqs []monitor.RequestHit) Stats {
+// NewStats create a new display stats object from section hits.
+func NewStats(shs []monitor.SectionHit) Stats {
 	stats := Stats{
-		TopHits: make(map[string]int, len(reqs)),
+		TopHits: make(map[string]int, len(shs)),
 	}
-	for _, req := range reqs {
-		stats.TopHits[req.URL] = req.Hit
+	for _, sh := range shs {
+		stats.TopHits[sh.Section] = sh.Hit
 	}
 	return stats
 }

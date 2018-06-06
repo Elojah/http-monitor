@@ -14,6 +14,10 @@ const (
 	timeFormat = "[02/Jan/2006:15:04:05 -0700]"
 )
 
+var (
+	clfRgx = regexp.MustCompile(`(\S+)\s+(\S+)\s+(\S+)\s+(\[.*?\])\s+(".*?")\s+(\S+)\s+(\S+)`)
+)
+
 // CLF represents a common log format line.
 type CLF struct {
 	ip         string
@@ -27,8 +31,7 @@ type CLF struct {
 
 // NewCLF returns a new CLF from s. Returns an error if the string format is not clf.
 func NewCLF(s string) (CLF, error) {
-	re := regexp.MustCompile(`(\S+)\s+(\S+)\s+(\S+)\s+(\[.*?\])\s+(".*?")\s+(\S+)\s+(\S+)`)
-	parts := re.FindStringSubmatch(s)
+	parts := clfRgx.FindStringSubmatch(s)
 	if len(parts) != 8 {
 		return CLF{}, errors.New("invalid common log format")
 	}
