@@ -12,16 +12,54 @@ const (
 	defaultLogPath = "/var/log/access.log"
 )
 
+// AlerterConfig is the configuration object for alerter.
+type AlerterConfig struct {
+	Treshold     uint   `json:"treshold"`
+	TriggerRange string `json:"trigger_range"`
+	ReboundGap   string `json:"rebound_gap"`
+	ReccurGap    string `json:"reccur_gap"`
+}
+
+// Check check if config fields are valid.
+func (c AlerterConfig) Check() error {
+	if c.Treshold == 0 {
+		return errors.New("missing treshold field")
+	}
+	if c.TriggerRange == "" {
+		return errors.New("missing trigger_range field")
+	}
+	if c.ReccurGap == "" {
+		return errors.New("missing reccur_gap field")
+	}
+	return nil
+}
+
+// LogReaderConfig is the configuration object for log reader.
+type LogReaderConfig struct {
+	LogFile    string `json:"log_file"`
+	StatsGap   string `json:"stats_gap"`
+	TopDisplay uint   `json:"top_display"`
+}
+
+// Check check if config fields are valid.
+func (c LogReaderConfig) Check() error {
+	if c.LogFile == "" {
+		return errors.New("missing log_file field")
+	}
+	if c.StatsGap == "" {
+		return errors.New("missing stats_gap field")
+	}
+	if c.TopDisplay == 0 {
+		return errors.New("missing top_display field")
+	}
+	return nil
+}
+
 // Config is the configuration structure for monitor.
 type Config struct {
-	LogFile          string       `json:"log_file"`
-	StatsInterval    uint         `json:"stats_interval"`
-	TopDisplay       uint         `json:"top_display"`
-	AlertReqPerSec   uint         `json:"alert_req_per_sec"`
-	AlertTriggerTime uint         `json:"alert_trigger_time"`
-	AlertReboundTime uint         `json:"alert_rebound_time"`
-	AlertReccurTime  uint         `json:"alert_reccur_time"`
-	Redis            redis.Config `json:"redis"`
+	Alerter   AlerterConfig   `json:"alerter"`
+	LogReader LogReaderConfig `json:"log_reader"`
+	Redis     redis.Config    `json:"redis"`
 }
 
 // NewConfig creates a new config initialized from filepath in JSON format.
@@ -38,23 +76,11 @@ func NewConfig(filepath string) (Config, error) {
 
 // Check check if config fields are valid.
 func (c Config) Check() error {
-	if c.LogFile == "" {
-		return errors.New("log filepath cannot be empty")
+	if err := c.Alerter.Check(); err != nil {
+		return err
 	}
-	if c.StatsInterval == 0 {
-		return errors.New("interval between each stats display cannot be 0")
+	if err := c.LogReader.Check(); err != nil {
+		return err
 	}
-	if c.TopDisplay == 0 {
-		return errors.New("number of top hits to display cannot be 0")
-	}
-	if c.AlertReqPerSec == 0 {
-		return errors.New("number of requests required to trigger an alert cannot be 0")
-	}
-	if c.AlertTriggerTime == 0 {
-		return errors.New("number of seconds required to trigger an alert cannot be 0")
-	}
-	if c.AlertReccurTime == 0 {
-		return errors.New("number of seconds required between two alerts check cannot be 0")
-	}
-	return nil
+	return c.Redis.Check()
 }

@@ -1,11 +1,15 @@
 {
 	"log_file": "bin/access.log",
-	"stats_interval": 5,
-	"top_display": 10,
-	"alert_req_per_sec":10,
-	"alert_trigger_time": 120,
-	"alert_rebound_time": 10,
-	"alert_reccur_time": 1,
+	"alerter":{
+		"treshold":120,
+		"trigger_range": "10s",
+		"rebound_gap": "2s",
+		"reccur_gap": "1s"
+	},
+	"log_reader": {
+		"stats_gap": "5s",
+		"top_display": 10
+	},
 	"redis": {
 		"addr": "127.0.0.1:6379",
 		"password": "secret",

@@ -31,10 +31,15 @@ func NewLogReader(services monitor.Services) *LogReader {
 }
 
 // Dial configure app with right settings.
-func (lr *LogReader) Dial(c Config) error {
+func (lr *LogReader) Dial(c LogReaderConfig) error {
+	var err error
 	lr.logFile = c.LogFile
 	lr.topDisplay = c.TopDisplay
-	lr.ticker = time.NewTicker(time.Second * time.Duration(c.StatsInterval))
+	statsGap, err := time.ParseDuration(c.StatsGap)
+	if err != nil {
+		return err
+	}
+	lr.ticker = time.NewTicker(statsGap)
 	return nil
 }
 

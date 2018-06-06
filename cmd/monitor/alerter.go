@@ -15,9 +15,9 @@ type Alerter struct {
 	ticker    *time.Ticker
 	lastAlert time.Time
 
-	reqPerSec   uint
-	triggerTime time.Duration
-	reboundTime time.Duration
+	treshold     uint
+	triggerRange time.Duration
+	reboundGap   time.Duration
 }
 
 // NewAlerter returns a new alerter.
@@ -28,11 +28,22 @@ func NewAlerter(services monitor.Services) *Alerter {
 }
 
 // Dial configure app with right settings.
-func (a *Alerter) Dial(c Config) error {
-	a.reqPerSec = c.AlertReqPerSec
-	a.triggerTime = time.Duration(c.AlertTriggerTime) * time.Second
-	a.reboundTime = time.Duration(c.AlertReboundTime) * time.Second
-	a.ticker = time.NewTicker(time.Second * time.Duration(c.AlertReccurTime))
+func (a *Alerter) Dial(c AlerterConfig) error {
+	var err error
+	a.treshold = c.Treshold
+	a.triggerRange, err = time.ParseDuration(c.TriggerRange)
+	if err != nil {
+		return err
+	}
+	a.reboundGap, err = time.ParseDuration(c.ReboundGap)
+	if err != nil {
+		return err
+	}
+	reccurGap, err := time.ParseDuration(c.ReccurGap)
+	if err != nil {
+		return err
+	}
+	a.ticker = time.NewTicker(reccurGap)
 	return nil
 }
 
@@ -44,13 +55,13 @@ func (a *Alerter) Close() {
 // Start starts the alert service.
 func (a *Alerter) Start() error {
 	for ts := range a.ticker.C {
-		min := ts.Add(-a.triggerTime)
+		min := ts.Add(-a.triggerRange)
 		max := ts
 		ticks, err := a.CountTick(monitor.TickSubset{Min: &min, Max: &max})
 		if err != nil {
 			return err
 		}
-		if ticks > int(a.reqPerSec) && ts.Sub(a.lastAlert) > a.reboundTime {
+		if ticks > int(a.treshold) && ts.Sub(a.lastAlert) > a.reboundGap {
 			a.lastAlert = ts
 			a.LogAlert(ticks, ts)
 		}

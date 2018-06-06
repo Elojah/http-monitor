@@ -32,11 +32,11 @@ func run(filepath string) {
 
 	logReader := NewLogReader(services)
 	alerter := NewAlerter(services)
-	if err := logReader.Dial(cfg); err != nil {
+	if err := logReader.Dial(cfg.LogReader); err != nil {
 		log.WithField("dial", "log_reader").Error(err)
 		return
 	}
-	if err := alerter.Dial(cfg); err != nil {
+	if err := alerter.Dial(cfg.Alerter); err != nil {
 		log.WithField("dial", "alerter").Error(err)
 		return
 	}
