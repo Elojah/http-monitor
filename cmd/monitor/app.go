@@ -12,7 +12,7 @@ import (
 
 // App is the main monitor app responsible fo reading logs and displaying stats.
 type App struct {
-	monitor.SectionHitMapper
+	monitor.SectionMapper
 
 	ticker *time.Ticker
 
@@ -21,9 +21,9 @@ type App struct {
 }
 
 // NewApp returns a new app.
-func NewApp(shm monitor.SectionHitMapper) *App {
+func NewApp(sm monitor.SectionMapper) *App {
 	return &App{
-		SectionHitMapper: shm,
+		SectionMapper: sm,
 	}
 }
 
@@ -55,7 +55,7 @@ func (a *App) Start() error {
 			if err := a.LogStats(); err != nil {
 				return err
 			}
-			if err := a.ResetSectionHit(); err != nil {
+			if err := a.ResetSection(); err != nil {
 				return err
 			}
 		case line := <-t.Lines:
@@ -74,7 +74,7 @@ func (a *App) Start() error {
 				log.Error(err)
 				continue
 			}
-			if err := a.AddSectionHit(req.Section()); err != nil {
+			if err := a.IncrSection(req.Section()); err != nil {
 				return err
 			}
 		}
@@ -83,7 +83,7 @@ func (a *App) Start() error {
 
 // LogStats log stats at time t.
 func (a *App) LogStats() error {
-	reqs, err := a.ListSectionHit(monitor.SectionHitSubset{TopHits: &a.topDisplay})
+	reqs, err := a.ListSection(monitor.SectionSubset{TopHits: &a.topDisplay})
 	if err != nil {
 		return err
 	}
