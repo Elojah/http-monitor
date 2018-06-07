@@ -70,20 +70,19 @@ func (a *Alerter) Start() error {
 			return err
 		}
 		status := a.status.Load()
-		switch status {
-		case monitor.Down:
-			if ticks >= int(a.treshold) && ts.Sub(a.lastAlert) > a.reboundGap {
-				a.status.Store(monitor.Up)
-				a.lastAlert = ts
-				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
-				a.LogAlert(alert)
-			}
-		case monitor.Up:
-			if ticks < int(a.treshold) && ts.Sub(a.lastAlert) > a.triggerRecover {
-				a.status.Store(monitor.Down)
-				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Down}
-				a.LogAlert(alert)
-			}
+		if status == monitor.Up &&
+			ticks < int(a.treshold) &&
+			ts.Sub(a.lastAlert) > a.triggerRecover {
+			a.status.Store(monitor.Down)
+			alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Down}
+			a.LogAlert(alert)
+			return nil
+		}
+		if ticks >= int(a.treshold) && ts.Sub(a.lastAlert) > a.reboundGap {
+			a.status.Store(monitor.Up)
+			a.lastAlert = ts
+			alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
+			a.LogAlert(alert)
 		}
 	}
 	return nil
