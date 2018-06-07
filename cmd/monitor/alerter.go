@@ -76,7 +76,7 @@ func (a *Alerter) Start() error {
 			a.status.Store(monitor.Down)
 			alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Down}
 			a.LogAlert(alert)
-			return nil
+			continue
 		}
 		if ticks >= int(a.treshold) && ts.Sub(a.lastAlert) > a.reboundGap {
 			a.status.Store(monitor.Up)

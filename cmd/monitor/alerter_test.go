@@ -33,7 +33,7 @@ func TestStart(t *testing.T) {
 			return
 		}
 		go func() { alerter.Start() }()
-		time.Sleep(1 * time.Second)
+		time.Sleep(300 * time.Millisecond)
 		alerter.Close()
 		if am.LogAlertUpCount != 0 {
 			t.Errorf(`expected=0, actual=%d`, am.LogAlertUpCount)
@@ -66,7 +66,7 @@ func TestStart(t *testing.T) {
 			return
 		}
 		go func() { alerter.Start() }()
-		time.Sleep(1 * time.Second)
+		time.Sleep(300 * time.Millisecond)
 		alerter.Close()
 		logAlertUpCount := atomic.LoadInt32(&am.LogAlertUpCount)
 		logAlertDownCount := atomic.LoadInt32(&am.LogAlertDownCount)
@@ -106,7 +106,7 @@ func TestStart(t *testing.T) {
 			return
 		}
 		go func() { alerter.Start() }()
-		time.Sleep(1 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 		alerter.Close()
 		logAlertUpCount := atomic.LoadInt32(&am.LogAlertUpCount)
 		logAlertDownCount := atomic.LoadInt32(&am.LogAlertDownCount)
@@ -133,7 +133,7 @@ func TestStart(t *testing.T) {
 			TriggerRange:   "0ms",
 			ReccurGap:      "100ms",
 			TriggerRecover: "200ms",
-			ReboundGap:     "400ms",
+			ReboundGap:     "300ms",
 		}
 		alerter := NewAlerter(mappers)
 		if err := alerter.Dial(config); err != nil {
