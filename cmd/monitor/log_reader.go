@@ -50,7 +50,7 @@ func (lr *LogReader) Close() {
 
 // Start starts the reading log process + regular display of stats.
 func (lr *LogReader) Start() error {
-	t, err := tail.TailFile(lr.logFile, tail.Config{Follow: true})
+	t, err := tail.TailFile(lr.logFile, tail.Config{Follow: true, Logger: tail.DiscardingLogger})
 	if err != nil {
 		return err
 	}

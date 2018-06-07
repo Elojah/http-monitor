@@ -6,4 +6,4 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 RUN make dep
 RUN make monitor
 ENTRYPOINT bin/http_monitor
-CMD ["-c", "/go/src/app/bin/config.json"]
+CMD ["-c", "/go/src/app/bin/config.docker.json"]

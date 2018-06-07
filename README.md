@@ -7,7 +7,7 @@ HTTP monitoring daemon
 > make dep #install dependencies
 > make #compile monitor
 > docker-compose -d redis #start redis
-> ./bin/monitor -c bin/config.json
+> ./bin/monitor -c bin/config.local.json
 ```
 #### container
 ```
