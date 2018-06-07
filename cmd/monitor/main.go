@@ -26,12 +26,12 @@ func run(filepath string) {
 		return
 	}
 
-	services := monitor.Services{}
-	services.SectionMapper = redisx
-	services.TickMapper = redisx
+	mappers := monitor.Mappers{}
+	mappers.SectionMapper = redisx
+	mappers.TickMapper = redisx
 
-	logReader := NewLogReader(services)
-	alerter := NewAlerter(services)
+	logReader := NewLogReader(mappers)
+	alerter := NewAlerter(mappers)
 	if err := logReader.Dial(cfg.LogReader); err != nil {
 		log.WithField("dial", "log_reader").Error(err)
 		return

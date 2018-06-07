@@ -1,7 +1,7 @@
 package monitor
 
-// Services wraps all monitor services.
-type Services struct {
+// Mappers wraps all monitor services.
+type Mappers struct {
 	SectionMapper
 	TickMapper
 }

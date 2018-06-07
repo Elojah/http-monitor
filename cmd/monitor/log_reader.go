@@ -23,10 +23,10 @@ type LogReader struct {
 }
 
 // NewLogReader returns a new log reader.
-func NewLogReader(services monitor.Services) *LogReader {
+func NewLogReader(mappers monitor.Mappers) *LogReader {
 	return &LogReader{
-		SectionMapper: services,
-		TickMapper:    services,
+		SectionMapper: mappers,
+		TickMapper:    mappers,
 	}
 }
 

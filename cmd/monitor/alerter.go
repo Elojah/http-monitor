@@ -1,17 +1,10 @@
 package main
 
 import (
-	"sync/atomic"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/elojah/http-monitor"
-)
-
-const (
-	recovered int32 = 0
-	alert     int32 = 1
+	"github.com/elojah/http-monitor/dto"
 )
 
 // Alerter is the main monitor app responsible fo reading logs and displaying stats.
@@ -26,14 +19,14 @@ type Alerter struct {
 	triggerRecover time.Duration
 	reboundGap     time.Duration
 
-	state int32
+	status monitor.AlertStatus
 }
 
 // NewAlerter returns a new alerter.
-func NewAlerter(services monitor.Services) *Alerter {
+func NewAlerter(mappers monitor.Mappers) *Alerter {
 	return &Alerter{
-		TickMapper: services,
-		state:      recovered,
+		TickMapper: mappers,
+		status:     monitor.Down,
 	}
 }
 
@@ -75,30 +68,22 @@ func (a *Alerter) Start() error {
 		if err != nil {
 			return err
 		}
-		state := atomic.LoadInt32(&a.state)
-		switch state {
-		case recovered:
+		status := a.status.Load()
+		switch status {
+		case monitor.Down:
 			if ticks >= int(a.treshold) && ts.Sub(a.lastAlert) > a.reboundGap {
-				atomic.StoreInt32(&a.state, alert)
+				a.status.Store(monitor.Up)
 				a.lastAlert = ts
-				a.LogAlert(ticks, ts)
+				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
+				dto.NewAlert(alert).Log()
 			}
-		case alert:
+		case monitor.Up:
 			if ticks < int(a.treshold) && ts.Sub(a.lastAlert) > a.triggerRecover {
-				atomic.StoreInt32(&a.state, recovered)
-				a.LogRecover(ticks, ts)
+				a.status.Store(monitor.Down)
+				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
+				dto.NewAlert(alert).Log()
 			}
 		}
 	}
 	return nil
-}
-
-// LogAlert log an alert of ticks at time ts.
-func (a *Alerter) LogAlert(ticks int, ts time.Time) {
-	log.Infof("High traffic generated an alert - hits = %d, triggered at %s", ticks, ts.String())
-}
-
-// LogRecover log an alert of ticks at time ts.
-func (a *Alerter) LogRecover(ticks int, ts time.Time) {
-	log.Infof("Alert recovered - hits = %d, triggered at %s", ticks, ts.String())
 }
