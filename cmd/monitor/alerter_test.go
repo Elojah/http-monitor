@@ -16,9 +16,9 @@ func TestStart(t *testing.T) {
 		tm.CountTickFunc = func(subset monitor.TickSubset) (int, error) {
 			return 10, nil
 		}
-		am := &mocks.AlertMapper{}
+		am := &mocks.LogAlertMapper{}
 		mappers.TickMapper = tm
-		mappers.AlertMapper = am
+		mappers.LogAlertMapper = am
 
 		config := AlerterConfig{
 			Treshold:       11,
@@ -49,9 +49,9 @@ func TestStart(t *testing.T) {
 		tm.CountTickFunc = func(subset monitor.TickSubset) (int, error) {
 			return 10, nil
 		}
-		am := &mocks.AlertMapper{}
+		am := &mocks.LogAlertMapper{}
 		mappers.TickMapper = tm
-		mappers.AlertMapper = am
+		mappers.LogAlertMapper = am
 
 		config := AlerterConfig{
 			Treshold:       10,
@@ -89,9 +89,9 @@ func TestStart(t *testing.T) {
 				return 0, nil
 			}
 		}
-		am := &mocks.AlertMapper{}
+		am := &mocks.LogAlertMapper{}
 		mappers.TickMapper = tm
-		mappers.AlertMapper = am
+		mappers.LogAlertMapper = am
 
 		config := AlerterConfig{
 			Treshold:       10,
@@ -124,9 +124,9 @@ func TestStart(t *testing.T) {
 		tm.CountTickFunc = func(subset monitor.TickSubset) (int, error) {
 			return 11, nil
 		}
-		am := &mocks.AlertMapper{}
+		am := &mocks.LogAlertMapper{}
 		mappers.TickMapper = tm
-		mappers.AlertMapper = am
+		mappers.LogAlertMapper = am
 
 		config := AlerterConfig{
 			Treshold:       10,

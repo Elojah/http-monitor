@@ -6,15 +6,15 @@ import (
 	monitor "github.com/elojah/http-monitor"
 )
 
-// AlertMapper mocks Alert mapper.
-type AlertMapper struct {
+// LogAlertMapper mocks Alert mapper.
+type LogAlertMapper struct {
 	LogAlertFunc      func(monitor.Alert)
 	LogAlertUpCount   int32
 	LogAlertDownCount int32
 }
 
 // LogAlert mocks alert mapper.
-func (m *AlertMapper) LogAlert(alert monitor.Alert) {
+func (m *LogAlertMapper) LogAlert(alert monitor.Alert) {
 	switch alert.Status {
 	case monitor.Down:
 		atomic.AddInt32(&m.LogAlertDownCount, 1)

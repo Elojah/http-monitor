@@ -9,7 +9,7 @@ import (
 // Alerter is the main monitor app responsible fo reading logs and displaying stats.
 type Alerter struct {
 	monitor.TickMapper
-	monitor.AlertMapper
+	monitor.LogAlertMapper
 
 	ticker    *time.Ticker
 	lastAlert time.Time
@@ -25,9 +25,9 @@ type Alerter struct {
 // NewAlerter returns a new alerter.
 func NewAlerter(mappers monitor.Mappers) *Alerter {
 	return &Alerter{
-		TickMapper:  mappers,
-		AlertMapper: mappers,
-		status:      monitor.Down,
+		TickMapper:     mappers,
+		LogAlertMapper: mappers,
+		status:         monitor.Down,
 	}
 }
 

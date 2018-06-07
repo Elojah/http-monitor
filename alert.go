@@ -32,7 +32,7 @@ type Alert struct {
 	Status AlertStatus
 }
 
-// AlertMapper maps alert operations.
-type AlertMapper interface {
+// LogAlertMapper maps alert operations.
+type LogAlertMapper interface {
 	LogAlert(Alert)
 }
