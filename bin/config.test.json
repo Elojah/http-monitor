@@ -4,7 +4,7 @@
 		"trigger_range": "5s",
 		"trigger_recover": "5s",
 		"rebound_gap": "2s",
-		"reccur_gap": "500ms"
+		"reccur_gap": "200ms"
 	},
 	"log_reader": {
 		"log_file": "bin/access.log",
