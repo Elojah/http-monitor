@@ -61,7 +61,10 @@ func run(filepath string) {
 func main() {
 	log.SetFormatter(&log.JSONFormatter{})
 
-	filepath := flag.String("c", "bin/config.json", "configuration file in JSON")
+	var filepath string
+	flag.StringVar(&filepath, "c", "", "configuration file in JSON")
 
-	run(*filepath)
+	flag.Parse()
+
+	run(filepath)
 }

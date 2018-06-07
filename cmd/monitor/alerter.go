@@ -80,7 +80,7 @@ func (a *Alerter) Start() error {
 		case monitor.Up:
 			if ticks < int(a.treshold) && ts.Sub(a.lastAlert) > a.triggerRecover {
 				a.status.Store(monitor.Down)
-				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
+				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Down}
 				dto.NewAlert(alert).Log()
 			}
 		}
