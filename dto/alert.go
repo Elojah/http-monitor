@@ -7,7 +7,7 @@ import (
 )
 
 // LogAlert logs the alert on stdout.
-func (Service) LogAlert(a monitor.Alert) {
+func (*Service) LogAlert(a monitor.Alert) {
 	switch a.Status {
 	case monitor.Down:
 		fmt.Printf("Alert recovered - hits = %d, triggered at %s", a.Ticks, a.TS.String())
