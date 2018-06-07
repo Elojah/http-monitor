@@ -6,27 +6,15 @@ import (
 	monitor "github.com/elojah/http-monitor"
 )
 
-// Stats represents the stats object to display regularly.
-type Stats struct {
-	TopHits map[string]int
-}
-
-// NewStats create a new display stats object from section hits.
-func NewStats(ss []monitor.Section) Stats {
-	stats := Stats{
-		TopHits: make(map[string]int, len(ss)),
+// LogSection is the dto implementation of LogSectionMapper.
+func (s *Service) LogSection(sections []monitor.Section, top uint) {
+	var count int
+	for _, section := range sections {
+		count += section.Hit
 	}
-	for _, s := range ss {
-		stats.TopHits[s.Name] = s.Hit
+	fmt.Printf("Hits: %d, Different sections: %d\n", count, len(sections))
+	for i := uint(0); i < top; i++ {
+		section := sections[i]
+		fmt.Printf("%s: %d - %d%%\n", section.Name, section.Hit, (section.Hit*100)/count)
 	}
-	return stats
-}
-
-// String returns the string representation sent for logs.
-func (s Stats) String() string {
-	var str string
-	for key, value := range s.TopHits {
-		str += fmt.Sprintf("%s: %d\n", key, value)
-	}
-	return str
 }

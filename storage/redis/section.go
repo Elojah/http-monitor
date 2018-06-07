@@ -17,28 +17,29 @@ func (s *Service) IncrSection(name string) error {
 
 // ListSection is the implementation of Section service by redis.
 func (s *Service) ListSection(subset monitor.SectionSubset) ([]monitor.Section, error) {
+	var count int64
 	if subset.TopHits != nil {
-		cmd := s.ZRevRangeByScoreWithScores(
-			sectionKey,
-			redis.ZRangeBy{
-				Count: int64(*subset.TopHits),
-				Min:   "-inf",
-				Max:   "+inf",
-			})
-		vals, err := cmd.Result()
-		if err != nil {
-			return nil, err
-		}
-		reqs := make([]monitor.Section, len(vals))
-		for i, val := range vals {
-			reqs[i] = monitor.Section{
-				Name: val.Member.(string),
-				Hit:  int(val.Score),
-			}
-		}
-		return reqs, nil
+		count = int64(*subset.TopHits)
 	}
-	return nil, nil
+	cmd := s.ZRevRangeByScoreWithScores(
+		sectionKey,
+		redis.ZRangeBy{
+			Count: count,
+			Min:   "-inf",
+			Max:   "+inf",
+		})
+	vals, err := cmd.Result()
+	if err != nil {
+		return nil, err
+	}
+	reqs := make([]monitor.Section, len(vals))
+	for i, val := range vals {
+		reqs[i] = monitor.Section{
+			Name: val.Member.(string),
+			Hit:  int(val.Score),
+		}
+	}
+	return reqs, nil
 }
 
 // ResetSection reset all registered request hits.

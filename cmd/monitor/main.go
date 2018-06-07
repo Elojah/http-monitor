@@ -29,6 +29,7 @@ func run(filepath string) {
 	dtox := dto.NewService()
 
 	mappers := monitor.Mappers{}
+	mappers.LogSectionMapper = dtox
 	mappers.SectionMapper = redisx
 	mappers.TickMapper = redisx
 	mappers.AlertMapper = dtox

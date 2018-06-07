@@ -12,6 +12,7 @@ import (
 
 // LogReader is the main monitor app responsible fo reading logs and displaying stats.
 type LogReader struct {
+	monitor.LogSectionMapper
 	monitor.SectionMapper
 	monitor.TickMapper
 
@@ -25,8 +26,9 @@ type LogReader struct {
 // NewLogReader returns a new log reader.
 func NewLogReader(mappers monitor.Mappers) *LogReader {
 	return &LogReader{
-		SectionMapper: mappers,
-		TickMapper:    mappers,
+		LogSectionMapper: mappers,
+		SectionMapper:    mappers,
+		TickMapper:       mappers,
 	}
 }
 
@@ -60,7 +62,7 @@ func (lr *LogReader) Start() error {
 			if !ok {
 				return nil
 			}
-			if err := lr.LogStats(); err != nil {
+			if err := lr.logSection(); err != nil {
 				return err
 			}
 			if err := lr.ResetSection(); err != nil {
@@ -92,12 +94,12 @@ func (lr *LogReader) Start() error {
 	}
 }
 
-// LogStats log stats at time t.
-func (lr *LogReader) LogStats() error {
-	reqs, err := lr.ListSection(monitor.SectionSubset{TopHits: &lr.topDisplay})
+// logSection log stats at time t.
+func (lr *LogReader) logSection() error {
+	reqs, err := lr.ListSection(monitor.SectionSubset{})
 	if err != nil {
 		return err
 	}
-	log.Infof("%s", dto.NewStats(reqs).String())
+	lr.LogSection(reqs, lr.topDisplay)
 	return nil
 }

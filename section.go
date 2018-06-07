@@ -13,6 +13,11 @@ type SectionMapper interface {
 	ResetSection() error
 }
 
+// LogSectionMapper is a log interface for sections.
+type LogSectionMapper interface {
+	LogSection([]Section, uint)
+}
+
 // SectionSubset targets part of stored sections per hits.
 type SectionSubset struct {
 	TopHits *uint
