@@ -26,11 +26,12 @@ func run(filepath string) {
 		log.WithField("dial", "redis").Error(err)
 		return
 	}
+	dtox := dto.NewService()
 
 	mappers := monitor.Mappers{}
 	mappers.SectionMapper = redisx
 	mappers.TickMapper = redisx
-	mappers.AlertMapper = dto.AlertService{}
+	mappers.AlertMapper = dtox
 
 	logReader := NewLogReader(mappers)
 	alerter := NewAlerter(mappers)
