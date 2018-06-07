@@ -1,0 +1,19 @@
+{
+	"alerter":{
+		"treshold":120,
+		"trigger_range": "10s",
+		"trigger_recover": "10s",
+		"rebound_gap": "5s",
+		"reccur_gap": "1s"
+	},
+	"log_reader": {
+		"log_file": "/var/log/access.log",
+		"stats_gap": "5s",
+		"top_display": 10
+	},
+	"redis": {
+		"addr": "redis:6379",
+		"password": "secret",
+		"db": 0
+	}
+}
