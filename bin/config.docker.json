@@ -1,14 +1,14 @@
 {
 	"alerter":{
-		"treshold":120,
-		"trigger_range": "10s",
-		"trigger_recover": "10s",
-		"rebound_gap": "5s",
+		"treshold": 1200,
+		"trigger_range": "2m",
+		"trigger_recover": "2m",
+		"rebound_gap": "2m",
 		"reccur_gap": "1s"
 	},
 	"log_reader": {
 		"log_file": "/var/log/access.log",
-		"stats_gap": "5s",
+		"stats_gap": "10s",
 		"top_display": 10
 	},
 	"redis": {
