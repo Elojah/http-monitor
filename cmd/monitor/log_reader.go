@@ -98,6 +98,6 @@ func (lr *LogReader) LogStats() error {
 	if err != nil {
 		return err
 	}
-	log.Info(dto.NewStats(reqs).String())
+	log.Infof("%s", dto.NewStats(reqs).String())
 	return nil
 }
