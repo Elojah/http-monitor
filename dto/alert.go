@@ -6,16 +6,11 @@ import (
 	monitor "github.com/elojah/http-monitor"
 )
 
-// Alert aliases a domain alert
-type Alert monitor.Alert
+// AlertService implements domain alert mapper.
+type AlertService struct{}
 
-// NewAlert returns a dto alert from a domain alert.
-func NewAlert(alert monitor.Alert) Alert {
-	return Alert(alert)
-}
-
-// Log logs the alert on stdout.
-func (a Alert) Log() {
+// LogAlert logs the alert on stdout.
+func (AlertService) LogAlert(a monitor.Alert) {
 	switch a.Status {
 	case monitor.Down:
 		fmt.Printf("Alert recovered - hits = %d, triggered at %s", a.Ticks, a.TS.String())

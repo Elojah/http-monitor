@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/elojah/http-monitor"
-	"github.com/elojah/http-monitor/dto"
 )
 
 // Alerter is the main monitor app responsible fo reading logs and displaying stats.
 type Alerter struct {
 	monitor.TickMapper
+	monitor.AlertMapper
 
 	ticker    *time.Ticker
 	lastAlert time.Time
@@ -25,8 +25,9 @@ type Alerter struct {
 // NewAlerter returns a new alerter.
 func NewAlerter(mappers monitor.Mappers) *Alerter {
 	return &Alerter{
-		TickMapper: mappers,
-		status:     monitor.Down,
+		TickMapper:  mappers,
+		AlertMapper: mappers,
+		status:      monitor.Down,
 	}
 }
 
@@ -75,13 +76,13 @@ func (a *Alerter) Start() error {
 				a.status.Store(monitor.Up)
 				a.lastAlert = ts
 				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Up}
-				dto.NewAlert(alert).Log()
+				a.LogAlert(alert)
 			}
 		case monitor.Up:
 			if ticks < int(a.treshold) && ts.Sub(a.lastAlert) > a.triggerRecover {
 				a.status.Store(monitor.Down)
 				alert := monitor.Alert{Ticks: ticks, TS: ts, Status: monitor.Down}
-				dto.NewAlert(alert).Log()
+				a.LogAlert(alert)
 			}
 		}
 	}

@@ -4,4 +4,5 @@ package monitor
 type Mappers struct {
 	SectionMapper
 	TickMapper
+	AlertMapper
 }

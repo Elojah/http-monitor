@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	monitor "github.com/elojah/http-monitor"
+	"github.com/elojah/http-monitor/dto"
 	"github.com/elojah/http-monitor/storage/redis"
 )
 
@@ -29,6 +30,7 @@ func run(filepath string) {
 	mappers := monitor.Mappers{}
 	mappers.SectionMapper = redisx
 	mappers.TickMapper = redisx
+	mappers.AlertMapper = dto.AlertService{}
 
 	logReader := NewLogReader(mappers)
 	alerter := NewAlerter(mappers)
